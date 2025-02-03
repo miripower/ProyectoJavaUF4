@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.DniInvalidoException;
+
 /**
  *
  * @author polmi
@@ -12,7 +14,7 @@ public class UsuarioVip extends Usuario {
     public UsuarioVip() {
     }
 
-    public UsuarioVip(int id, String nombre, String apellidos, String email, String dni, String telefono, String direccion, double descuentos, boolean salavip) {
+    public UsuarioVip(int id, String nombre, String apellidos, String email, String dni, String telefono, String direccion, double descuentos, boolean salavip) throws DniInvalidoException {
         super(id, nombre, apellidos, email, dni, telefono, direccion);
         this.descuentos = descuentos;
         this.salavip = salavip;

@@ -1,10 +1,11 @@
 package model;
 
 import enums.ClaseAsiento;
+import exceptions.AsientoOcupadoException;
 
 /**
  *
- * @author polmi
+ * @autor polmi
  */
 public class Asiento {
 
@@ -22,11 +23,11 @@ public class Asiento {
     }
 
     // Métodos adicionales
-    public void ocupar() {
+    public void ocupar() throws AsientoOcupadoException {
         if (!estado) {
             estado = true;
         } else {
-            System.out.println("El asiento ya está ocupado.");
+            throw new AsientoOcupadoException("El asiento ya está ocupado.");
         }
     }
 

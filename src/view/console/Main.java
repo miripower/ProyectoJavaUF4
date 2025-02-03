@@ -2,6 +2,8 @@
 package view.console;
 
 import enums.*;
+import exceptions.AsientoOcupadoException;
+import exceptions.DniInvalidoException;
 import model.*;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.List;
  * @author polmi
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DniInvalidoException, AsientoOcupadoException {
         // Crear usuarios
         Usuario usuario1 = new Usuario(1, "Juan", "Perez", "juan.perez@example.com", "12345678Z", "600123456", "Calle Falsa 123");
         Usuario usuario2 = new Usuario(2, "Ana", "Lopez", "ana.lopez@example.com", "87654321X", "610987654", "Avenida Siempre Viva 742");

@@ -1,8 +1,10 @@
 package model;
 
+import exceptions.DniInvalidoException;
+
 /**
  *
- * @author polmi
+ * @autor polmi
  */
 public class Usuario {
 
@@ -17,7 +19,7 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(int id, String nombre, String apellidos, String email, String dni, String telefono, String direccion) {
+    public Usuario(int id, String nombre, String apellidos, String email, String dni, String telefono, String direccion) throws DniInvalidoException {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -64,11 +66,11 @@ public class Usuario {
         return dni;
     }
 
-    public void setDni(String dni) {
+    public void setDni(String dni) throws DniInvalidoException {
         if (esDniValido(dni)) {
             this.dni = dni;
         } else {
-            throw new IllegalArgumentException("DNI inválido: " + dni);
+            throw new DniInvalidoException("DNI inválido: " + dni);
         }
     }
 

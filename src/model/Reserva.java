@@ -1,5 +1,7 @@
 package model;
 
+import exceptions.AsientoOcupadoException;
+
 /**
  *
  * @author polmi
@@ -75,7 +77,7 @@ public class Reserva {
     }
     
     //Metodos
-    public void confirmarReserva() {
+    public void confirmarReserva() throws AsientoOcupadoException {
         if (asiento.estaDisponible()) {
             asiento.ocupar();
             System.out.println("Reserva confirmada para " + usuario.getNombre());
