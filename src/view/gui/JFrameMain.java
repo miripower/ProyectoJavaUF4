@@ -7,10 +7,19 @@ package view.gui;
 import enums.*;
 import exceptions.AsientoOcupadoException;
 import exceptions.DniInvalidoException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import model.*;
-
+import model.validations.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,17 +27,54 @@ import java.util.List;
  */
 public class JFrameMain extends javax.swing.JFrame {
 
+    private Avion avion;
+    private Vuelo vuelo;
+    private List<Asiento> asientos;
+    double precioBase;
+
     /**
      * Creates new form JFrameMain
      */
     public JFrameMain() {
         initComponents();
         cargarComboBoxOrigenDestino();
+        InicioApp();
+        cargarComboBoxClaseAsiento();
+        crearAsientosYVuelo();
+    }
+
+    private void crearAsientosYVuelo() {
+        asientos = new ArrayList<>();
+
+        // Crear 5 asientos económicos
+        for (int i = 1; i <= 5; i++) {
+            asientos.add(new Asiento(i, ClaseAsiento.ECONOMICA, false));
+        }
+
+        // Crear 5 asientos premium
+        for (int i = 6; i <= 10; i++) {
+            asientos.add(new Asiento(i, ClaseAsiento.PREMIUM, false));
+        }
+
+        // Crear 5 asientos primera clase
+        for (int i = 11; i <= 15; i++) {
+            asientos.add(new Asiento(i, ClaseAsiento.PRIMERA_CLASE, false));
+        }
+
+        // Crear avión
+        avion = new Avion(1, "Boeing 737", 15, asientos);
+
+        // Crear vuelo (sin origen/destino inicial)
+        vuelo = new Vuelo(1, null, null, null, avion);
     }
 
     private void cargarComboBoxOrigenDestino() {
         jComboBoxOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(convertirEnumAString(OrigenDestino.values())));
         jComboBoxDestino.setModel(new javax.swing.DefaultComboBoxModel<>(convertirEnumAString(OrigenDestino.values())));
+    }
+
+    private void cargarComboBoxClaseAsiento() {
+        jComboBoxClaseAsiento.setModel(new javax.swing.DefaultComboBoxModel<>(convertirEnumAStringClase(ClaseAsiento.values())));
     }
 
     private String[] convertirEnumAString(OrigenDestino[] origenDestinos) {
@@ -37,6 +83,28 @@ public class JFrameMain extends javax.swing.JFrame {
             nombres[i] = origenDestinos[i].name();
         }
         return nombres;
+    }
+
+    private String[] convertirEnumAStringClase(ClaseAsiento[] claseAsientos) {
+        String[] clases = new String[claseAsientos.length];
+        for (int i = 0; i < claseAsientos.length; i++) {
+            clases[i] = claseAsientos[i].name();
+        }
+        return clases;
+    }
+
+    private void InicioApp() {
+        jComboBoxClaseAsiento.setEnabled(false);
+        jTextFieldNombre.setEnabled(false);
+        jTextFieldApellido.setEnabled(false);
+        jTextFieldEmail.setEnabled(false);
+        jTextFieldDni.setEnabled(false);
+        jTextFieldTelefono.setEnabled(false);
+        jTextFieldDireccion.setEnabled(false);
+        jButtonConfirmarReserva.setEnabled(false);
+        jButtonCSV.setEnabled(false);
+        jTextFieldPrecio.setEditable(false);
+        jTextFieldPrecio.setText("");
     }
 
     /**
@@ -73,6 +141,10 @@ public class JFrameMain extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         jTextFieldDireccion = new javax.swing.JTextField();
         jButtonConfirmarReserva = new javax.swing.JButton();
+        jButtonCSV = new javax.swing.JButton();
+        jButtonClear = new javax.swing.JButton();
+        jLabel10 = new javax.swing.JLabel();
+        jTextFieldPrecio = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -154,6 +226,23 @@ public class JFrameMain extends javax.swing.JFrame {
             }
         });
 
+        jButtonCSV.setText("BILLETE");
+        jButtonCSV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCSVActionPerformed(evt);
+            }
+        });
+
+        jButtonClear.setText("BORRAR");
+        jButtonClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonClearActionPerformed(evt);
+            }
+        });
+
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel10.setText("Precio:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -166,7 +255,16 @@ public class JFrameMain extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonConfirmarReserva)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonConfirmarReserva)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonCSV)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonClear))
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButtonConfirmarOrigenDestino)
                             .addComponent(jLabelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,9 +360,16 @@ public class JFrameMain extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jTextFieldDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButtonConfirmarReserva)
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(jTextFieldPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonConfirmarReserva)
+                    .addComponent(jButtonCSV)
+                    .addComponent(jButtonClear))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pack();
@@ -279,29 +384,215 @@ public class JFrameMain extends javax.swing.JFrame {
     }//GEN-LAST:event_jComboBoxOrigenActionPerformed
 
     private void jButtonConfirmarOrigenDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarOrigenDestinoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButtonConfirmarOrigenDestinoActionPerformed
-
-    private void jComboBoxClaseAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxClaseAsientoActionPerformed
         OrigenDestino origen = OrigenDestino.valueOf(jComboBoxOrigen.getSelectedItem().toString());
         OrigenDestino destino = OrigenDestino.valueOf(jComboBoxDestino.getSelectedItem().toString());
 
-        // Mostrar el JComboBox de clase de asiento
-        jComboBoxClaseAsiento.setEnabled(true);
+        if (origen == destino) {
+            JOptionPane.showMessageDialog(this, "No puedes elegir el mismo Origen y Destino", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // Configurar origen, destino y hora del vuelo
+            LocalDateTime ahora = LocalDateTime.now();
+            LocalDateTime fechaHoraVuelo = ahora.plusHours(2); // Hora actual + 2 horas
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            String fechaHoraStr = fechaHoraVuelo.format(formatter);
 
-        // Mostrar el formulario de datos del usuario
-        jTextFieldNombre.setEnabled(true);
-        jTextFieldApellido.setEnabled(true);
-        jTextFieldDni.setEnabled(true);
-        jTextFieldTelefono.setEnabled(true);
-        jTextFieldDireccion.setEnabled(true);
+            vuelo.setOrigen(origen);
+            vuelo.setDestino(destino);
+            vuelo.setFechaHora(fechaHoraStr);
 
-        jButtonConfirmarReserva.setEnabled(true);
+            // Mostrar mensaje de éxito
+            JOptionPane.showMessageDialog(this, "Origen y Destino Confirmados", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+
+            // Habilitar selección de clase de asiento y formulario
+            jComboBoxClaseAsiento.setEnabled(true);
+            jTextFieldNombre.setEnabled(true);
+            jTextFieldApellido.setEnabled(true);
+            jTextFieldEmail.setEnabled(true);
+            jTextFieldDni.setEnabled(true);
+            jTextFieldTelefono.setEnabled(true);
+            jTextFieldDireccion.setEnabled(true);
+            jButtonConfirmarReserva.setEnabled(true);
+
+            // Deshabilitar origen y destino
+            jComboBoxOrigen.setEnabled(false);
+            jComboBoxDestino.setEnabled(false);
+            jButtonConfirmarOrigenDestino.setEnabled(false);
+        }
+    }//GEN-LAST:event_jButtonConfirmarOrigenDestinoActionPerformed
+
+    private void jComboBoxClaseAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxClaseAsientoActionPerformed
+
     }//GEN-LAST:event_jComboBoxClaseAsientoActionPerformed
 
     private void jButtonConfirmarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarReservaActionPerformed
-        // TODO add your handling code here:
+        boolean isValid = true;
+
+        // Validar datos del usuario
+        if (!UserDataValidations.checkName(jTextFieldNombre.getText())) {
+            isValid = false;
+            JOptionPane.showMessageDialog(this, "Nombre no válido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (!UserDataValidations.checkName(jTextFieldApellido.getText())) {
+            isValid = false;
+            JOptionPane.showMessageDialog(this, "Apellido no válido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (!UserDataValidations.checkEmail(jTextFieldEmail.getText())) {
+            isValid = false;
+            JOptionPane.showMessageDialog(this, "Email no válido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (!UserDataValidations.checkId(jTextFieldDni.getText())) {
+            isValid = false;
+            JOptionPane.showMessageDialog(this, "DNI no válido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (!UserDataValidations.isNumeric(jTextFieldTelefono.getText())) {
+            isValid = false;
+            JOptionPane.showMessageDialog(this, "Teléfono no válido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (jTextFieldDireccion.getText().isEmpty()) {
+            isValid = false;
+            JOptionPane.showMessageDialog(this, "Dirección no válida", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        if (isValid) {
+            // Crear usuario
+            Usuario usuario = null;
+            try {
+                usuario = new Usuario(
+                        1,
+                        jTextFieldNombre.getText(),
+                        jTextFieldApellido.getText(),
+                        jTextFieldEmail.getText(),
+                        jTextFieldDni.getText(),
+                        jTextFieldTelefono.getText(),
+                        jTextFieldDireccion.getText()
+                );
+            } catch (DniInvalidoException ex) {
+                Logger.getLogger(JFrameMain.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            // Obtener clase de asiento seleccionada
+            ClaseAsiento claseSeleccionada = ClaseAsiento.valueOf(jComboBoxClaseAsiento.getSelectedItem().toString());
+
+            // Buscar asiento disponible
+            Asiento asientoSeleccionado = null;
+            for (Asiento asiento : asientos) {
+                if (asiento.getClase().equals(claseSeleccionada) && !asiento.isOcupado()) {
+                    asientoSeleccionado = asiento;
+                    break;
+                }
+            }
+
+            if (asientoSeleccionado == null) {
+                JOptionPane.showMessageDialog(this, "No hay asientos disponibles en esta clase", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Marcar asiento como ocupado
+            asientoSeleccionado.setOcupado(true);
+
+            // Calcular precio según la clase de asiento
+            precioBase = calcularPrecioBase(claseSeleccionada);
+
+            // Redondear precioBase a dos decimales
+            precioBase = Math.round(precioBase * 100.0) / 100.0;
+
+            // Crear reserva con el precio calculado
+            Reserva reserva = new Reserva(
+                    1,
+                    usuario,
+                    vuelo,
+                    asientoSeleccionado,
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")),
+                    precioBase
+            );
+
+            // Mostrar precio
+            JOptionPane.showMessageDialog(this, "El precio de tu reserva es: €" + precioBase, "Precio", JOptionPane.INFORMATION_MESSAGE);
+
+            // Deshabilitar campos
+            jButtonConfirmarReserva.setEnabled(false);
+            jTextFieldNombre.setEnabled(false);
+            jTextFieldApellido.setEnabled(false);
+            jTextFieldEmail.setEnabled(false);
+            jTextFieldDni.setEnabled(false);
+            jTextFieldTelefono.setEnabled(false);
+            jTextFieldDireccion.setEnabled(false);
+            jComboBoxClaseAsiento.setEnabled(false);
+
+            // Habilitar botón CSV
+            jButtonCSV.setEnabled(true);
+
+            // Convertir precioBase a String y mostrarlo en el campo de texto
+            String precioString = String.format("%.2f", precioBase); // Formatear con dos decimales
+            jTextFieldPrecio.setText(precioString);
+        }
     }//GEN-LAST:event_jButtonConfirmarReservaActionPerformed
+
+    private double calcularPrecioBase(ClaseAsiento clase) {
+        Random random = new Random();
+        switch (clase) {
+            case ECONOMICA:
+                return 20 + (80 - 20) * random.nextDouble(); // Precio entre 20 y 80
+            case PREMIUM:
+                return calcularPrecioBase(ClaseAsiento.ECONOMICA) + 50; // Base económica + 50
+            case PRIMERA_CLASE:
+                return calcularPrecioBase(ClaseAsiento.PREMIUM) + 100; // Base premium + 100
+            default:
+                return 0;
+        }
+    }
+
+    private void jButtonCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCSVActionPerformed
+        // Crear contenido del archivo CSV
+        String precioBillete = String.format("%.2f", precioBase);
+        
+        StringBuilder csvContent = new StringBuilder();
+        csvContent.append("Origen: ").append(vuelo.getOrigen().name()).append(" | ");
+        csvContent.append("Destino: ").append(vuelo.getDestino().name()).append(" | ");
+        csvContent.append("Fecha y Hora:").append(vuelo.getFechaHora()).append("\n\n");
+        csvContent.append("Nombre: ").append(jTextFieldNombre.getText()).append(" ").append(jTextFieldApellido.getText()).append("\n");
+        csvContent.append("Email: ").append(jTextFieldEmail.getText()).append("\n");
+        csvContent.append("DNI: ").append(jTextFieldDni.getText()).append("\n");
+        csvContent.append("Telefono: ").append(jTextFieldTelefono.getText()).append("\n");
+        csvContent.append("Direccion: ").append(jTextFieldDireccion.getText()).append("\n\n");
+        csvContent.append("Precio: ").append(precioBillete);
+
+        // Escribir archivo CSV
+        try {
+            Files.write(Paths.get("reserva.txt"), csvContent.toString().getBytes());
+            JOptionPane.showMessageDialog(this, "Billete generado con éxito", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al generar el Billete", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jButtonCSVActionPerformed
+
+    private void jButtonClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonClearActionPerformed
+        // Limpiar todos los campos
+        jTextFieldNombre.setText("");
+        jTextFieldApellido.setText("");
+        jTextFieldEmail.setText("");
+        jTextFieldDni.setText("");
+        jTextFieldTelefono.setText("");
+        jTextFieldDireccion.setText("");
+        jComboBoxClaseAsiento.setSelectedIndex(0);
+
+        // Habilitar campos de origen y destino
+        jComboBoxOrigen.setEnabled(true);
+        jComboBoxDestino.setEnabled(true);
+        jButtonConfirmarOrigenDestino.setEnabled(true);
+
+        // Deshabilitar campos de reserva
+        jComboBoxClaseAsiento.setEnabled(false);
+        jTextFieldNombre.setEnabled(false);
+        jTextFieldApellido.setEnabled(false);
+        jTextFieldEmail.setEnabled(false);
+        jTextFieldDni.setEnabled(false);
+        jTextFieldTelefono.setEnabled(false);
+        jTextFieldDireccion.setEnabled(false);
+        jButtonConfirmarReserva.setEnabled(false);
+        jButtonCSV.setEnabled(false);
+        jTextFieldPrecio.setText("");
+    }//GEN-LAST:event_jButtonClearActionPerformed
 
     /**
      * @param args the command line arguments
@@ -339,12 +630,15 @@ public class JFrameMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonCSV;
+    private javax.swing.JButton jButtonClear;
     private javax.swing.JButton jButtonConfirmarOrigenDestino;
     private javax.swing.JButton jButtonConfirmarReserva;
     private javax.swing.JComboBox<String> jComboBoxClaseAsiento;
     private javax.swing.JComboBox<String> jComboBoxDestino;
     private javax.swing.JComboBox<String> jComboBoxOrigen;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -363,6 +657,7 @@ public class JFrameMain extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldDni;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldNombre;
+    private javax.swing.JTextField jTextFieldPrecio;
     private javax.swing.JTextField jTextFieldTelefono;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,7 +5,7 @@ import exceptions.AsientoOcupadoException;
 
 /**
  *
- * @autor polmi
+ * @author polmi
  */
 public class Asiento {
 
@@ -38,7 +38,7 @@ public class Asiento {
             System.out.println("El asiento ya está libre.");
         }
     }
-    
+
     public boolean estaDisponible() {
         return !estado;
     }
@@ -80,5 +80,14 @@ public class Asiento {
                 .append(", estado=").append(estado)
                 .append("]");
         return sb.toString();
+    }
+
+    // Nuevos métodos implementados
+    public boolean isOcupado() {
+        return this.estado; // Devuelve true si el asiento está ocupado
+    }
+
+    public void setOcupado(boolean b) {
+        this.estado = b; // Cambia el estado del asiento
     }
 }
