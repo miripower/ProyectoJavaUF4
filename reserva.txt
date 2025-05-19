@@ -1,9 +1,9 @@
-Origen: BARCELONA | Destino: MADRID | Fecha y Hora:2025-02-24 19:15
+Origen: BARCELONA | Destino: MADRID | Fecha y Hora:2025-03-31 21:40
 
-Nombre: Pol Miret Vidal
+Nombre: Pol Miret
 Email: polmivi@gmail.com
 DNI: 47329786H
-Telefono: 6572562572
-Direccion: a
+Telefono: 674044820
+Direccion: Germanor
 
-Precio: 117.00058911066822
+Precio: 83,85€

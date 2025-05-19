@@ -27,10 +27,10 @@ public class Main {
         }
 
         // Crear avión
-        Avion avion = new Avion(1, "Boeing 737", 10, asientos);
+        Avion avion = new Avion(1, "Boeing 737", 10);
 
         // Crear vuelo
-        Vuelo vuelo = new Vuelo(1, OrigenDestino.MADRID, OrigenDestino.BARCELONA, "2024-12-20 15:30", avion);
+        Vuelo vuelo = new Vuelo(1, OrigenDestino.MADRID, OrigenDestino.BARCELONA, "2024-12-20 15:30", avion, asientos);
 
         // Mostrar detalles del vuelo y los asientos
         vuelo.mostrarDetalles();
