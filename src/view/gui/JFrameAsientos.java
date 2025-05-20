@@ -8,6 +8,7 @@ import model.*;
 import enums.*;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,17 +24,17 @@ public class JFrameAsientos extends javax.swing.JFrame {
     }
 
     public void actualizarListaAsientos(ClaseAsiento clase) {
-    List<Integer> asientosDisponibles = DataClass.v.obtenerAsientosDisponibles(clase);
-    System.out.println("asientos: " + asientosDisponibles.toString());
-    // Limpiar el comboBox actual
-    jComboBoxAsientos.removeAllItems();
+        List<Integer> asientosDisponibles = DataClass.v.obtenerAsientosDisponibles(clase);
+        System.out.println("asientos: " + asientosDisponibles.toString());
+        // Limpiar el comboBox actual
+        jComboBoxAsientos.removeAllItems();
 
-    // Agregar cada asiento disponible al comboBox
-    for (Integer asiento : asientosDisponibles) {
-        jComboBoxAsientos.addItem(asiento.toString());
+        // Agregar cada asiento disponible al comboBox
+        for (Integer asiento : asientosDisponibles) {
+            jComboBoxAsientos.addItem(asiento.toString());
+        }
+
     }
-}
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +50,7 @@ public class JFrameAsientos extends javax.swing.JFrame {
         jLabelTitle = new javax.swing.JLabel();
         jLabelAsientos = new javax.swing.JLabel();
         jComboBoxAsientos = new javax.swing.JComboBox<>();
+        jButtonConfirmarAsiento = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,6 +71,13 @@ public class JFrameAsientos extends javax.swing.JFrame {
             }
         });
 
+        jButtonConfirmarAsiento.setText("Confirmar asiento");
+        jButtonConfirmarAsiento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConfirmarAsientoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -81,6 +90,7 @@ public class JFrameAsientos extends javax.swing.JFrame {
                     .addComponent(jLabelAsientos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButtonConfirmarAsiento)
                             .addComponent(jLabelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jComboBoxAsientos, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 253, Short.MAX_VALUE)))
@@ -97,7 +107,9 @@ public class JFrameAsientos extends javax.swing.JFrame {
                 .addComponent(jLabelAsientos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jComboBoxAsientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButtonConfirmarAsiento)
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -118,8 +130,13 @@ public class JFrameAsientos extends javax.swing.JFrame {
 
     private void jComboBoxAsientosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxAsientosActionPerformed
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jComboBoxAsientosActionPerformed
+
+    private void jButtonConfirmarAsientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarAsientoActionPerformed
+        JOptionPane.showMessageDialog(this, "¡Reserva confirmada con éxito!", "Confirmación", JOptionPane.INFORMATION_MESSAGE);
+        this.dispose();
+    }//GEN-LAST:event_jButtonConfirmarAsientoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -157,6 +174,7 @@ public class JFrameAsientos extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonConfirmarAsiento;
     private javax.swing.JComboBox<String> jComboBoxAsientos;
     private javax.swing.JLabel jLabelAsientos;
     private javax.swing.JLabel jLabelIcon;
